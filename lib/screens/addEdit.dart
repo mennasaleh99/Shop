@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:shop/provider/product.dart';
+import 'package:provider/provider.dart';
 
-class ADD_EditScreen extends StatefulWidget {
-  const ADD_EditScreen({Key? key}) : super(key: key);
+class ADDEditScreen extends StatefulWidget {
+  const ADDEditScreen({Key? key}) : super(key: key);
 
   @override
-  _ADD_EditScreenState createState() => _ADD_EditScreenState();
+  _ADDEditScreenState createState() => _ADDEditScreenState();
 }
 
-class _ADD_EditScreenState extends State<ADD_EditScreen> {
+class _ADDEditScreenState extends State<ADDEditScreen> {
   @override
   Widget build(BuildContext context) {
     TextEditingController title = TextEditingController();
@@ -17,12 +19,41 @@ class _ADD_EditScreenState extends State<ADD_EditScreen> {
 
     var args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    Product product;
+    if (args != null) {
+      product = Provider.of<Products>(context).findById(args['id']);
+      title.text = product.title;
+      price.text = product.price.toString();
+      desc.text = product.description;
+      imgUrl.text = product.imgUrl;
+    }
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[300],
         title: Text(args == null ? 'Add Product' : 'Edit Product'),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.save))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                args == null
+                    ? Provider.of<Products>(context, listen: false).addProduct(
+                        title: title.text,
+                        price: double.parse(price.text),
+                        description: desc.text,
+                        imgUrl: imgUrl.text,
+                        isfav: false)
+                    : Provider.of<Products>(context, listen: false)
+                        .updateProduct(
+                        id: args['id'],
+                        title: title.text,
+                        price: double.parse(price.text),
+                        description: desc.text,
+                        imgUrl: imgUrl.text,
+                      );
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.save))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

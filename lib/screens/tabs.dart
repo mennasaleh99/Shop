@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shop/provider/product.dart';
+
 import 'package:shop/screens/allProducts.dart';
 import 'package:shop/screens/favourite_screen.dart';
 import 'package:shop/screens/product_screen.dart';
+import 'package:provider/provider.dart';
 
 class Tabs extends StatefulWidget {
   const Tabs({Key? key}) : super(key: key);
@@ -12,43 +14,15 @@ class Tabs extends StatefulWidget {
 }
 
 class _TabsState extends State<Tabs> {
-  List<Product> products = [
-    Product(
-      id: '1',
-      title: 'Product 1',
-      price: 150,
-      description: 'Any Description',
-      imgUrl:
-          'https://media.istockphoto.com/photos/running-shoes-picture-id1249496770?b=1&k=6&m=1249496770&s=170667a&w=0&h=9uttCAghGWpQC9aNxH7B50vsahNUHFL49IpI7J0Mxug=',
-      isFav: false,
-    ),
-    Product(
-      id: '2',
-      title: 'Product 2',
-      price: 100,
-      description: 'Any Description',
-      imgUrl:
-          'https://media.istockphoto.com/photos/running-shoes-picture-id1249496770?b=1&k=6&m=1249496770&s=170667a&w=0&h=9uttCAghGWpQC9aNxH7B50vsahNUHFL49IpI7J0Mxug=',
-      isFav: true,
-    ),
-    Product(
-      id: '3',
-      title: 'Product 3',
-      price: 150,
-      description: 'Any Description',
-      imgUrl:
-          'https://media.istockphoto.com/photos/running-shoes-picture-id1249496770?b=1&k=6&m=1249496770&s=170667a&w=0&h=9uttCAghGWpQC9aNxH7B50vsahNUHFL49IpI7J0Mxug=',
-      isFav: false,
-    ),
-  ];
   int currentIndex = 0;
   late List<Map<String, dynamic>> pages;
+
   @override
   void initState() {
     pages = [
       {
         'title': Text("Product"),
-        'body': ProductScreen(products),
+        'body': ProductScreen(),
       },
       {
         'title': Text("Favourite"),
@@ -73,10 +47,8 @@ class _TabsState extends State<Tabs> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AllProducts(prods: products)));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AllProducts()));
             },
             icon: Icon(
               Icons.party_mode_rounded,
@@ -85,7 +57,17 @@ class _TabsState extends State<Tabs> {
           ),
         ],
       ),
-      body: pages[currentIndex]['body'],
+      body: FutureBuilder(
+        future: Provider.of<Products>(context).getData(),
+        builder: (_, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return pages[currentIndex]['body'];
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.green[300],
         unselectedItemColor: Colors.grey[500],

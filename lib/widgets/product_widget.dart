@@ -1,15 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shop/screens/addEdit.dart';
+import 'package:shop/provider/product.dart';
 import 'package:shop/screens/description_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProductWidget extends StatefulWidget {
+  final String id;
   final String imgUrl;
   final String name;
   final bool isFav;
 
   const ProductWidget(
-      {required this.name, required this.imgUrl, required this.isFav, Key? key})
+      {required this.id,
+      required this.name,
+      required this.imgUrl,
+      required this.isFav,
+      Key? key})
       : super(key: key);
 
   @override
@@ -36,10 +41,14 @@ class _ProductWidgetState extends State<ProductWidget> {
         child: GridTile(
           child: Image.network(
             widget.imgUrl,
+            fit: BoxFit.fill,
           ),
           header: ListTile(
             trailing: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Provider.of<Products>(context, listen: false)
+                      .change(widget.id, widget.isFav);
+                },
                 icon: Icon(
                   widget.isFav ? Icons.favorite : Icons.favorite_border,
                   color: Colors.green[300],

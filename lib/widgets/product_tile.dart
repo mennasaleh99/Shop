@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/provider/product.dart';
 
-class ProductTile extends StatelessWidget {
+class ProductTile extends StatefulWidget {
   final String imgUrl;
   final String title;
   final String id;
@@ -14,6 +16,11 @@ class ProductTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ProductTile> createState() => _ProductTileState();
+}
+
+class _ProductTileState extends State<ProductTile> {
+  @override
   Widget build(BuildContext context) {
     return Slidable(
       actionPane: const SlidableDrawerActionPane(),
@@ -22,10 +29,14 @@ class ProductTile extends StatelessWidget {
         color: Colors.white,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(imgUrl),
-            radius: 20,
-          ),
-          title: Text(title),
+              child: FittedBox(
+                child: Image.network(
+                  widget.imgUrl,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              radius: 20),
+          title: Text(widget.title),
         ),
       ),
       secondaryActions: <Widget>[
@@ -34,13 +45,19 @@ class ProductTile extends StatelessWidget {
             color: Colors.black45,
             icon: Icons.edit_outlined,
             onTap: () {
-              Navigator.pushNamed(context, '/AddEdit', arguments: {'id': id});
+              Navigator.pushNamed(context, '/AddEdit',
+                  arguments: {'id': widget.id});
             }),
         IconSlideAction(
             caption: 'Delete',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: () {}),
+            onTap: () {
+              setState(() {
+                Provider.of<Products>(context, listen: false)
+                    .removeProduct(widget.id);
+              });
+            }),
       ],
     );
   }

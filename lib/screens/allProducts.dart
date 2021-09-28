@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/provider/product.dart';
 import 'package:shop/widgets/product_tile.dart';
+import 'package:provider/provider.dart';
 
 class AllProducts extends StatefulWidget {
-  final List<Product> prods;
-  AllProducts({required this.prods, Key? key}) : super(key: key);
+  AllProducts({Key? key}) : super(key: key);
 
   @override
   _AllProductsState createState() => _AllProductsState();
@@ -14,6 +14,7 @@ class AllProducts extends StatefulWidget {
 class _AllProductsState extends State<AllProducts> {
   @override
   Widget build(BuildContext context) {
+    List<Product> prods = Provider.of<Products>(context).getProduct;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[300],
@@ -31,12 +32,12 @@ class _AllProductsState extends State<AllProducts> {
       ),
       body: ListView.builder(
           shrinkWrap: true,
-          itemCount: widget.prods.length,
+          itemCount: prods.length,
           itemBuilder: (ctx, i) {
             return ProductTile(
-                imgUrl: widget.prods[i].imgUrl,
-                title: widget.prods[i].title,
-                id: widget.prods[i].id);
+                imgUrl: prods[i].imgUrl,
+                title: prods[i].title,
+                id: prods[i].id);
           }),
     );
   }

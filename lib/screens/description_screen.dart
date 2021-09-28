@@ -24,10 +24,13 @@ class DescriptionScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(10),
         child: Center(
-          child: Column(
+          child: ListView(
             children: [
               ClipRRect(
-                child: Image.network(imgUrl),
+                child: Image.network(
+                  imgUrl,
+                  fit: BoxFit.fill,
+                ),
                 borderRadius: BorderRadius.circular(15),
               ),
               SizedBox(

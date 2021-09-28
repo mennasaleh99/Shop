@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shop/provider/product.dart';
 import 'package:shop/widgets/product_widget.dart';
+import 'package:provider/provider.dart';
 
 class ProductScreen extends StatelessWidget {
-  final List<Product> products;
-  ProductScreen(this.products, {Key? key}) : super(key: key);
+  ProductScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<Product> products = Provider.of<Products>(context).getProduct;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
@@ -19,6 +20,7 @@ class ProductScreen extends StatelessWidget {
         ),
         itemBuilder: (ctx, i) {
           return ProductWidget(
+            id: products[i].id,
             name: products[i].title,
             imgUrl: products[i].imgUrl,
             isFav: products[i].isFav,
